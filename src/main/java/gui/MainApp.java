@@ -2,6 +2,7 @@ package gui;
 
 import api.ForecastLookup;
 import api.Geocoder;
+import gui.components.ForecastView;
 import gui.components.SearchBar;
 import gui.components.SearchView;
 import javafx.application.Application;
@@ -12,6 +13,7 @@ import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
 import models.Location;
+import utils.RecentSearches;
 
 import java.util.List;
 
@@ -30,12 +32,16 @@ public class MainApp extends Application {
         double sceneHeight = bounds.getHeight() * 0.5;
 
         SearchView searchView = new SearchView();
+        ForecastView forecastView = new ForecastView();
+        RecentSearches recentSearches = new RecentSearches();
+        System.out.println(recentSearches.getRecentEntries());
+
 
 
         VBox root = new VBox(10 );
         root.setAlignment(Pos.TOP_CENTER);
 
-        root.getChildren().add(searchView);
+        root.getChildren().addAll(searchView, forecastView);
 
 
         searchView.maxWidthProperty().bind(root.widthProperty().multiply(0.5));
@@ -43,6 +49,8 @@ public class MainApp extends Application {
         searchView.selectedLocationProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 System.out.println("Selected location: " + newValue);
+                // add this location to recent list with timestamp when searched\
+                recentSearches.addLocation(newValue);
                 // trigger the weather forecast view here.
                 ForecastLookup locationForecast = new ForecastLookup();
                 System.out.println("Forecast: " + locationForecast.getForecast(newValue));

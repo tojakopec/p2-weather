@@ -36,3 +36,8 @@
 .highlighted-result {
     -fx-background-color: #555555;
 }
+
+.label-location-name {
+    -fx-font-size: 16;
+    -fx-text-fill: #cfcfcf
+}

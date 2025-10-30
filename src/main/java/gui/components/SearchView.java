@@ -3,10 +3,7 @@ package gui.components;
 import api.Geocoder;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
-import javafx.geometry.Pos;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
@@ -56,10 +53,13 @@ public class SearchView extends VBox {
             }
         });
 
+        // Reset the highlighted result whenever the user types again
         this.searchBar.getTextField().textProperty().addListener((obs, oldText, newText) -> {
-            // Reset the highlighted result whenever the user types again
             highlightedIndex = -1;
         });
+
+        // Reset the highlighted result when user clicks back into the text field
+        this.searchBar.getTextField().setOnMouseClicked(e -> highlightedIndex = -1);
 
 
         // Close the search results box if the user clicks outside it
@@ -152,7 +152,7 @@ public class SearchView extends VBox {
     private void handleSelection(Location selected) {
         if (selected != null) {
             selectedLocation.set(selected);
-            resultsList.setVisible(false);  // Hide the list
+            resultsList.setVisible(false);
             resultsList.setManaged(false);
         }
     }

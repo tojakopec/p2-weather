@@ -1,6 +1,6 @@
 package api;
 
-import models.ForecastResponse;
+import models.Forecast;
 import models.Location;
 import tools.jackson.databind.DeserializationFeature;
 import tools.jackson.databind.ObjectMapper;
@@ -28,7 +28,7 @@ public class ForecastLookup {
                 .build();
     }
 
-    public ForecastResponse getForecast(Location location) {
+    public Forecast getForecast(Location location) {
         try{
             String url = baseUrl + location.getLatitude() + longitudeUrl + location.getLongitude()
                     + "&hourly=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m,wind_direction_10m";
@@ -40,7 +40,7 @@ public class ForecastLookup {
             HttpResponse<String> response = client.send(request, HttpResponse.BodyHandlers.ofString());
 
             if (response.statusCode() == 200) {
-                return mapper.readValue(response.body(), ForecastResponse.class);
+                return mapper.readValue(response.body(), Forecast.class);
             } else {
                 out.println("API request failed with status code: " + response.statusCode());
                 out.println("Response Body: " + response.body());

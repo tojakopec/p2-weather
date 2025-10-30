@@ -3,11 +3,12 @@ package models;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class Location {
+public class Location implements Serializable {
     private int id;
     private String name;
     private double latitude;
@@ -16,7 +17,7 @@ public class Location {
     private String admin1;
     private String country;
     private String[] postcodes;
-    private ForecastResponse forecastResponse;
+    private Forecast forecast;
     private LocalDateTime lastUpdate;
 
     /*

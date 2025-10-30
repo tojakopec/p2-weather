@@ -11,7 +11,7 @@ import java.util.List;
  * adds new fields, our Java code won't break during JSON parsing.
  */
 @JsonIgnoreProperties(ignoreUnknown = true)
-public class ForecastResponse {
+public class Forecast {
 
     private double latitude;
     private double longitude;
