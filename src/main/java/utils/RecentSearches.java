@@ -3,7 +3,6 @@ package utils;
 import models.Location;
 import models.SearchEntry;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -36,5 +35,11 @@ public class RecentSearches {
 
     public List<SearchEntry> getRecentEntries() {
         return recentEntries;
+    }
+
+    public static Location getLatestLocation(){
+        List<SearchEntry> recentEntries = FileHandler.readFromFile(RECENT_SEARCHES_FILE);
+        if (recentEntries == null || recentEntries.isEmpty()) return null;
+        return recentEntries.getFirst().getLocation();
     }
 }

@@ -1,42 +1,50 @@
 package gui.components;
 
+import javafx.beans.binding.Bindings;
+import javafx.beans.property.ObjectProperty;
+import javafx.beans.property.SimpleObjectProperty;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import models.Forecast;
 import models.Location;
-import utils.RecentSearches;
 
 public class ForecastView extends VBox {
-    public Location selectedLocation;
-    public Forecast forecast;
-
-    public ForecastView(Location location) {
-        super(5);
-        this.selectedLocation = location;
-    }
+    private final ObjectProperty<Location> selectedLocation = new SimpleObjectProperty<>();
+    private final ObjectProperty<Forecast> forecast = new SimpleObjectProperty<>();
+    private final Label locationNameLabel = new Label();
 
     public ForecastView() {
         super(5);
-        this.getChildren().addAll(LocationName());
+        this.getStyleClass().add("forecast-view");
 
+        locationNameLabel.getStyleClass().add("label-location-name");
+        // Bind the label to automatically change and react to the latest user search
+        locationNameLabel.textProperty().bind(Bindings.createStringBinding(() -> {
+            Location location = selectedLocation.get();
+            return location == null ? "Search for a location to see the weather forecast." : location.getName();
+        }, selectedLocation));
+
+        this.getChildren().add(locationNameLabel);
     }
 
-
-    public void setForecast(Forecast forecast) {
-        this.forecast = forecast;
+    public ObjectProperty<Location> selectedLocationProperty() {
+        return selectedLocation;
     }
 
-    private Label LocationName(){
-        Label locationName = new Label("No Location Selected");
-        locationName.getStyleClass().add("label-location-name");
-        return locationName;
-    }
-
-    public Forecast getForecast() {
+    public ObjectProperty<Forecast> forecastProperty() {
         return forecast;
     }
 
-    public Location getSelectedLocation() {
-        return selectedLocation;
+    public void setForecast(Forecast forecast) {
+        this.forecast.set(forecast);
     }
+
+    public Forecast getForecast() {
+        return forecast.get();
+    }
+
+    public Location getSelectedLocation() {
+        return selectedLocation.get();
+    }
+
 }

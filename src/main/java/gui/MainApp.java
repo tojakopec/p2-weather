@@ -1,21 +1,18 @@
 package gui;
 
 import api.ForecastLookup;
-import api.Geocoder;
 import gui.components.ForecastView;
-import gui.components.SearchBar;
 import gui.components.SearchView;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.stage.Screen;
 import javafx.geometry.Rectangle2D;
-import models.Location;
+import models.Forecast;
 import utils.RecentSearches;
-
-import java.util.List;
 
 public class MainApp extends Application {
 
@@ -32,16 +29,18 @@ public class MainApp extends Application {
         double sceneHeight = bounds.getHeight() * 0.5;
 
         SearchView searchView = new SearchView();
-        ForecastView forecastView = new ForecastView();
         RecentSearches recentSearches = new RecentSearches();
-        System.out.println(recentSearches.getRecentEntries());
+        ForecastView forecastView = new ForecastView();
 
+        // Makes sure the selected location and forecast matches the one selected in the search results, reactively
+        forecastView.selectedLocationProperty().bind(searchView.selectedLocationProperty());
 
-
+        StackPane stack = new StackPane();
+        stack.getChildren().addAll(searchView, forecastView);
         VBox root = new VBox(10 );
         root.setAlignment(Pos.TOP_CENTER);
 
-        root.getChildren().addAll(searchView, forecastView);
+        root.getChildren().add( stack);
 
 
         searchView.maxWidthProperty().bind(root.widthProperty().multiply(0.5));
@@ -49,10 +48,14 @@ public class MainApp extends Application {
         searchView.selectedLocationProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null) {
                 System.out.println("Selected location: " + newValue);
-                // add this location to recent list with timestamp when searched\
+                // Add this location to the recent searches list
                 recentSearches.addLocation(newValue);
-                // trigger the weather forecast view here.
+                // Look up the forecast for the location
                 ForecastLookup locationForecast = new ForecastLookup();
+                Forecast forecast = locationForecast.getForecast(newValue);
+
+                forecastView.setForecast(forecast);
+
                 System.out.println("Forecast: " + locationForecast.getForecast(newValue));
                 // render forecast
             }
