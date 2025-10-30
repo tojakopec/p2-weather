@@ -27,6 +27,8 @@ public class HourlyForecastView extends VBox {
         this.getStyleClass().add("hourly-forecast-view");
         titleLabel.getStyleClass().add("forecast-title-label");
 
+        this.setAlignment(Pos.CENTER);
+
         ScrollPane scrollPane = new ScrollPane(contentBox);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.getStyleClass().add("forecast-scroll-pane");

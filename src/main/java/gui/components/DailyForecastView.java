@@ -27,6 +27,7 @@ public class DailyForecastView extends VBox {
         super(10);
         this.getStyleClass().add("daily-forecast-view"); // New CSS class
         titleLabel.getStyleClass().add("forecast-title-label");
+        this.setAlignment(Pos.CENTER);
 
         ScrollPane scrollPane = new ScrollPane(contentBox);
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -43,11 +44,14 @@ public class DailyForecastView extends VBox {
 
     private void populateView(Forecast f) {
         contentBox.getChildren().clear();
-        if (f == null || f.getDaily() == null) {
+        if (f == null || f.getDaily() == null || f.getDaily().getTime().isEmpty()) {
+            titleLabel.setText("No Forecast Available");
             return;
         }
 
         Forecast.Daily dailyData = f.getDaily();
+
+
 
         // Use our new getters
         List<String> times = dailyData.getTime();
@@ -55,6 +59,8 @@ public class DailyForecastView extends VBox {
         List<Double> lows = dailyData.getTemperature2mMin();
         List<Integer> codes = dailyData.getWeatherCode();
         String tempUnit = f.getCurrentTemperatureUnit();
+
+        titleLabel.setText(times.size() + "-Day Forecast");
 
         int numDays = times.size();
         for (int i = 0; i < numDays; i++) {

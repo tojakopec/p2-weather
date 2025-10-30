@@ -240,4 +240,10 @@
     -fx-text-fill: #888888;
 }
 
+.settings-label {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #cfcfcf;
+}
+
 

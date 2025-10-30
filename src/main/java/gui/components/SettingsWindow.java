@@ -9,6 +9,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -39,25 +40,33 @@ public class SettingsWindow extends Stage {
         grid.setPadding(new Insets(20));
 
         // Temperature
-        grid.add(new Label("Temperature Unit:"), 0, 0);
+        Label tempLabel = new Label("Temperature Units:");
+        tempLabel.getStyleClass().add("settings-label");
+        grid.add(tempLabel, 0, 0);
         tempBox = new ComboBox<>(FXCollections.observableArrayList(TemperatureUnit.values()));
         tempBox.setValue(TemperatureUnit.valueOf(props.getProperty("temperature_unit")));
         grid.add(tempBox, 1, 0);
 
         // Wind Speed
-        grid.add(new Label("Wind Speed Unit:"), 0, 1);
+        Label windLabel = new Label("Wind Speed Units:");
+        windLabel.getStyleClass().add("settings-label");
+        grid.add(windLabel, 0, 1);
         windBox = new ComboBox<>(FXCollections.observableArrayList(WindSpeedUnit.values()));
         windBox.setValue(WindSpeedUnit.valueOf(props.getProperty("wind_speed_unit")));
         grid.add(windBox, 1, 1);
 
         // Precipitation
-        grid.add(new Label("Precipitation Unit:"), 0, 2);
+        Label precipLabel = new Label("Precipitation Units:");
+        precipLabel.getStyleClass().add("settings-label");
+        grid.add(precipLabel, 0, 2);
         precipBox = new ComboBox<>(FXCollections.observableArrayList(PrecipitationUnit.values()));
         precipBox.setValue(PrecipitationUnit.valueOf(props.getProperty("precipitation_unit")));
         grid.add(precipBox, 1, 2);
 
         // Forecast Days
-        grid.add(new Label("Forecast Days:"), 0, 3);
+        Label daysLabel = new Label("Forecast Days:");
+        daysLabel.getStyleClass().add("settings-label");
+        grid.add(daysLabel, 0, 3);
         daysSpinner = new Spinner<>(1, 16, Integer.parseInt(props.getProperty("forecast_days")));
         grid.add(daysSpinner, 1, 3);
 
@@ -65,8 +74,16 @@ public class SettingsWindow extends Stage {
         Button saveButton = new Button("Save");
         saveButton.setOnAction(e -> saveAndClose());
 
-        VBox layout = new VBox(20, grid, saveButton);
+        // Cancel button]
+        Button cancelButton = new Button("Cancel");
+        cancelButton.setOnAction(e -> close());
+
+        HBox buttonBox = new HBox(10, cancelButton, saveButton);
+        buttonBox.setAlignment(Pos.CENTER);
+
+        VBox layout = new VBox(20, grid, buttonBox);
         layout.setAlignment(Pos.CENTER);
+        layout.setPadding(new Insets(10));
 
         Scene scene = new Scene(layout);
         scene.getStylesheets().add("stylesheets/style.css");
