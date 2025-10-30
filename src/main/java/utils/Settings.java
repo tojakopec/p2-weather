@@ -39,6 +39,10 @@ public class Settings {
         }
     }
 
+    public Properties getProperties() {
+        return properties;
+    }
+
     public void updateSettings(String key, String value) {
         properties.setProperty(key, value);
         saveSettings();

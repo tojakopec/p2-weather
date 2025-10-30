@@ -29,7 +29,7 @@ public class SearchView extends VBox {
 
         configureResultsList();
 
-        this.getChildren().addAll(searchBar, resultsList);
+        this.getChildren().add(searchBar);
 
         this.searchBar.setOnSearch(event -> {
             String query = searchBar.getSearchText();
@@ -87,11 +87,17 @@ public class SearchView extends VBox {
 
     }
 
+    // We want the results list not to disturb the layout when it appears,
+    // so we will handle it in a StackPane outside of this class via this getter
+    public VBox getResultsList() {
+        return resultsList;
+    }
     // Hide the search results box until a search has been complete
     private void configureResultsList() {
         resultsList.getStyleClass().add("search-results-list");
         resultsList.setVisible(false);
         resultsList.setManaged(false);
+        resultsList.setMaxHeight(VBox.USE_PREF_SIZE);
     }
 
     private void handleSearch(String query){

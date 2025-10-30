@@ -19,9 +19,7 @@ public class Main {
             out.println("No locations found matching the query.");
         }
 
-        ForecastLookup forecastLookup = new ForecastLookup();
 
-        out.println(forecastLookup.getForecast(locations.getFirst()));
     }
 
 }
