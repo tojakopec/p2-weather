@@ -5,6 +5,7 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Label;
+import javafx.scene.effect.GaussianBlur;
 import javafx.scene.layout.VBox;
 import models.Location;
 import models.SearchEntry;

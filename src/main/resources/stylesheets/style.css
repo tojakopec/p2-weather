@@ -85,6 +85,7 @@
     -fx-font-size: 24;
     -fx-font-weight: 600;
     -fx-text-fill: #cfcfcf;
+    -fx-effect: dropshadow(gaussian, rgba(255,255,255,0.2), 5, 0, 0, 0);
 }
 
 .label-location-time{
@@ -92,11 +93,24 @@
     -fx-text-fill: #999999;
 }
 
+.label-wind-speed {
+    -fx-font-size: 16;
+    -fx-text-fill: #007aff;
+}
+
+.wind-icon {
+    -fx-font-family: "Weather Icons";
+    -fx-font-size: 20px;
+    -fx-text-fill: #007aff;
+}
+
+
 .forecast-view {
     -fx-background-color: rgba(68, 68, 68, 0.2);
     -fx-background-radius: 10;
     -fx-font-family: "Arial";
     -fx-padding: 30;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 0);
 }
 
 .label-current-temperature {
@@ -111,7 +125,7 @@
 }
 
 .hourly-forecast-view {
-    -fx-background-color: rgba(68, 68, 68, 0.3);
+    /*-fx-background-color: rgba(68, 68, 68, 0.3);*/
     -fx-background-radius: 10;
     -fx-font-family: "Arial";
     -fx-padding: 30;
@@ -185,15 +199,15 @@
 }
 
 .scroll-bar:horizontal .thumb {
-    -fx-background-color: #333333;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
 }
 
 .scroll-bar:horizontal .thumb:hover {
-    -fx-background-color: #555555;
+    -fx-background-color: rgba(255, 255, 255, 0.4);
 }
 
 .daily-forecast-view {
-    -fx-background-color: rgba(68, 68, 68, 0.3);
+    /*-fx-background-color: rgba(68, 68, 68, 0.3);*/
     -fx-background-radius: 10;
     -fx-font-family: "Arial";
     -fx-padding: 30;
@@ -210,9 +224,8 @@
 }
 
 .view-toggle-button {
-    -fx-background-color: #555555;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
     -fx-text-fill: #cfcfcf;
-    -fx-border-color: #444444;
     -fx-border-width: 2;
     -fx-background-insets: 0;
     -fx-padding: 5 15 5 15;
@@ -220,12 +233,12 @@
 }
 
 .view-toggle-button:hover {
-    -fx-background-color: #666666;
+    -fx-background-color: rgba(255, 255, 255, 0.4);
+    -fx-cursor: hand;
 }
 
 .view-toggle-button:selected {
-    -fx-background-color: #007aff;
-    -fx-text-fill: white;
+    -fx-background-color: rgba(166,72,30, 0.9);
     -fx-font-weight: bold;
 }
 
@@ -243,7 +256,7 @@
 
 .icon-button {
     -fx-font-family: "Arial";
-    -fx-font-size: 24px;
+    -fx-font-size: 34px;
     -fx-text-fill: #999999;
     -fx-padding: 5px;
 }
@@ -254,17 +267,20 @@
 }
 
 .drawer-menu {
-    -fx-background-color: rgba(68, 68, 68, 0.5);
+    /*-fx-background-color: rgba(68, 68, 68, 0.5);*/
+    -fx-background-color: linear-gradient(to bottom, rgba(61, 61, 117, 0.2) 40%, transparent);
     -fx-background-radius: 10;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 0);
 }
 
 .recent-search-item {
     -fx-padding: 10px;
     -fx-background-radius: 5;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 0);
 }
 
 .recent-search-item:hover {
-    -fx-background-color: #555555;
+    -fx-background-color: rgba(255, 255, 255, 0.2);
     -fx-cursor: hand;
 }
 
@@ -276,7 +292,7 @@
 
 .recent-search-admin {
     -fx-font-size: 14px;
-    -fx-text-fill: #999999;
+    -fx-text-fill: rgba(255,149,0, 0.9)
 }
 
 .recent-search-time {
@@ -291,7 +307,8 @@
 }
 
 .weather-details-view {
-    -fx-background-color: #444444;
+    /*-fx-background-color: #444444;*/
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 0);
     -fx-background-radius: 10;
     -fx-padding: 20px 30px;
     -fx-alignment: center;

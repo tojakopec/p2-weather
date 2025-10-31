@@ -55,9 +55,6 @@ public class MainApp extends Application {
 
         ForecastView forecastView = new ForecastView();
 
-        WeatherDetailsView detailsView = new WeatherDetailsView();
-        detailsView.forecastProperty().bind(forecastView.forecastProperty());
-        detailsView.visibleProperty().bind(forecastView.visibleProperty());
 
         // Load the last searched for location and pull its forecast (if it exists)
         // Also, set the location property in searchView to this value, as our ForecastView location is reacting to it
@@ -75,7 +72,7 @@ public class MainApp extends Application {
         // Build the layout
         VBox mainContent = new VBox(10);
         mainContent.setAlignment(Pos.TOP_CENTER);
-        mainContent.getChildren().addAll(forecastView, detailsView);
+        mainContent.getChildren().addAll(forecastView);
 
         StackPane.setMargin(mainContent, new Insets(80, 0, 0, 0));
 
@@ -83,6 +80,7 @@ public class MainApp extends Application {
 
         Label hamburgerIcon = new Label("\u2630");
         hamburgerIcon.getStyleClass().add("icon-button");
+        hamburgerIcon.setTranslateY(-1);
 
         Label cogIcon = new Label("\u2699");
         cogIcon.getStyleClass().add("icon-button");

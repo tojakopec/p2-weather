@@ -32,6 +32,7 @@ public class ForecastView extends VBox {
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
     private HourlyForecastView hourlyView;
     private DailyForecastView dailyView;
+    private WeatherDetailsView detailsView;
 
 
     public ForecastView() {
@@ -80,12 +81,19 @@ public class ForecastView extends VBox {
             return f == null ? "" : f.getFormattedWindSpeed();
         }, forecast));
 
+        Label windIcon = new Label("\uf021");
+        windIcon.getStyleClass().add("wind-icon");
+        windIcon.setTranslateY(-2);
+
+        HBox windBox = new HBox(5, windIcon, windSpeedLabel);
+        windBox.setAlignment(Pos.CENTER);
+
         HBox dailyHighAndLowBox = new HBox(5, dailyHighLabel, dailyLowLabel);
         dailyHighAndLowBox.getStyleClass().add("daily-highlow-box");
         dailyHighAndLowBox.setAlignment(Pos.CENTER);
 
 
-        VBox currentSummaryBox = new VBox(5, locationNameLabel, locationTimeLabel, currentTemperatureLabel, dailyHighAndLowBox, windSpeedLabel);
+        VBox currentSummaryBox = new VBox(5, locationNameLabel, locationTimeLabel, currentTemperatureLabel, dailyHighAndLowBox, windBox);
         currentSummaryBox.setAlignment(Pos.CENTER);
 
         ToggleButton hourlyToggle = new ToggleButton("Hourly");
@@ -125,8 +133,11 @@ public class ForecastView extends VBox {
         dailyView.visibleProperty().bind(dailyToggle.selectedProperty());
         dailyView.managedProperty().bind(dailyToggle.selectedProperty());
 
+        detailsView = new WeatherDetailsView();
+        detailsView.forecastProperty().bind(this.forecast);
 
-        this.getChildren().addAll(currentSummaryBox, toggleBox, hourlyView, dailyView);
+
+        this.getChildren().addAll(currentSummaryBox, toggleBox, hourlyView, dailyView, detailsView);
     }
 
     public ObjectProperty<Location> selectedLocationProperty() {

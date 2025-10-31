@@ -101,9 +101,7 @@ public class DailyForecastView extends VBox {
         }
     }
 
-    /**
-     * Formats an ISO date string (e.g., "2025-10-31") into "Today" or "Fri".
-     */
+
     private String formatDay(LocalDate date) {
         if (date.equals(LocalDate.now())) {
             return "Today";
