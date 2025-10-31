@@ -1,10 +1,7 @@
 package gui;
 
 import api.ForecastLookup;
-import gui.components.ForecastView;
-import gui.components.RecentSearchesView;
-import gui.components.SearchView;
-import gui.components.SettingsWindow;
+import gui.components.*;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.geometry.Insets;
@@ -32,6 +29,8 @@ public class MainApp extends Application {
     private TranslateTransition drawerSlide;
     private RecentSearchesView recentSearchesView;
 
+    private StackPane root;
+
     private boolean isDrawerOpen = false;
 
     public static void main(String[] args) {
@@ -56,6 +55,10 @@ public class MainApp extends Application {
 
         ForecastView forecastView = new ForecastView();
 
+        WeatherDetailsView detailsView = new WeatherDetailsView();
+        detailsView.forecastProperty().bind(forecastView.forecastProperty());
+        detailsView.visibleProperty().bind(forecastView.visibleProperty());
+
         // Load the last searched for location and pull its forecast (if it exists)
         // Also, set the location property in searchView to this value, as our ForecastView location is reacting to it
         Location lastLocation = RecentSearches.getLatestLocation();
@@ -63,6 +66,7 @@ public class MainApp extends Application {
             searchView.selectedLocationProperty().set(lastLocation);
             Forecast forecast = forecastLookup.getForecast(lastLocation);
             forecastView.setForecast(forecast);
+            updateBackground(forecast);
         }
 
         // Makes sure the selected location and forecast matches the one selected in the search results, reactively
@@ -71,7 +75,7 @@ public class MainApp extends Application {
         // Build the layout
         VBox mainContent = new VBox(10);
         mainContent.setAlignment(Pos.TOP_CENTER);
-        mainContent.getChildren().addAll(forecastView);
+        mainContent.getChildren().addAll(forecastView, detailsView);
 
         StackPane.setMargin(mainContent, new Insets(80, 0, 0, 0));
 
@@ -92,13 +96,15 @@ public class MainApp extends Application {
             recentSearchesView.setTranslateX(-newValue.doubleValue());
         });
 
-        StackPane root = new StackPane();
+        root = new StackPane();
         root.getChildren().addAll(
                 mainContent,
                 searchView,
                 recentSearchesView,
                 iconBox,
                 resultsList);
+        root.getStyleClass().add("bg-night");
+
         StackPane.setAlignment(mainContent, Pos.TOP_CENTER);
         StackPane.setAlignment(searchView, Pos.TOP_CENTER);
         StackPane.setMargin(searchView, new Insets(10, 0, 0, 0));
@@ -128,6 +134,7 @@ public class MainApp extends Application {
                 // Look up the forecast for the location
                 Forecast forecast = forecastLookup.getForecast(newValue);
                 forecastView.setForecast(forecast);
+                updateBackground(forecast);
                 System.out.println("Forecast: " + forecast);
             }
         });
@@ -188,6 +195,21 @@ public class MainApp extends Application {
             drawerSlide.setToX(-recentSearchesView.getWidth());
 
             drawerSlide.play();
+        }
+    }
+
+    private void updateBackground(Forecast forecast) {
+        if (root == null || forecast == null) {
+            return;
+        }
+
+        // Clear previous styles
+        root.getStyleClass().removeAll("bg-day", "bg-night");
+
+        if (forecast.getIsDay() == 1) {
+            root.getStyleClass().add("bg-day");
+        } else {
+            root.getStyleClass().add("bg-night");
         }
     }
 }

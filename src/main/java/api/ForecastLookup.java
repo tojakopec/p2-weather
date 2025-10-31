@@ -36,9 +36,12 @@ public class ForecastLookup {
         try{
             Properties props = settings.getProperties();
             String url = baseUrl + location.getLatitude() + longitudeUrl + location.getLongitude()
-                    + "&current_weather=true"
-                    + "&hourly=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m,wind_direction_10m"
-                    + "&daily=weather_code,temperature_2m_max,temperature_2m_min"
+                    + "&current=temperature_2m,relative_humidity_2m,apparent_temperature,is_day,weathercode,windspeed_10m,rain,showers"
+                    + "&current_units=temperature_2m,windspeed_10m,rain,showers"
+                    + "&hourly=temperature_2m,relative_humidity_2m,is_day,weather_code,wind_speed_10m,wind_direction_10m,precipitation_probability,uv_index"
+                    + "&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset"
+                    // API settings
+                    + "&timezone=auto"
                     + "&temperature_unit=" + props.getProperty("temperature_unit")
                     + "&wind_speed_unit=" + props.getProperty("wind_speed_unit")
                     + "&precipitation_unit=" + props.getProperty("precipitation_unit")

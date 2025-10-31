@@ -23,6 +23,7 @@ public class SearchView extends VBox {
 
     public SearchView() {
         super(5);
+        this.getStyleClass().add("search-view");
         this.searchBar = new SearchBar();
         this.resultsList = new VBox(5);
         this.geocoder = new Geocoder();

@@ -16,12 +16,11 @@ public class SearchBar extends HBox {
         super(5);
         // TODO: Switch styling to CSS file
         searchField.setPromptText("Enter a city name");
-        searchField.setStyle("-fx-background-color: #444444; -fx-text-fill: #ffffff; -fx-font-size: 16px; -fx-font-weight: bold;");
+        searchField.getStyleClass().add("search-field");
         searchButton.setDefaultButton(true);
-        searchButton.setStyle("-fx-background-color: #d84d14; -fx-focus-color: #eca820");
+        searchButton.getStyleClass().add("search-button");
 
         HBox.setHgrow(searchField, Priority.ALWAYS);
-        this.setStyle("-fx-background-color: #444444; fx-border-color: #d84d14; -fx-border-radius: 2 ");
         this.getChildren().addAll(searchField, searchButton);
     }
 

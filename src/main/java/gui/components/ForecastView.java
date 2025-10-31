@@ -1,5 +1,7 @@
 package gui.components;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.binding.Bindings;
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -9,17 +11,25 @@ import javafx.scene.control.ToggleButton;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.util.Duration;
 import models.Forecast;
 import models.Location;
+
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 
 public class ForecastView extends VBox {
     private final ObjectProperty<Location> selectedLocation = new SimpleObjectProperty<>();
     private final ObjectProperty<Forecast> forecast = new SimpleObjectProperty<>();
     private final Label locationNameLabel = new Label();
+    private final Label locationTimeLabel = new Label();
     private final Label currentTemperatureLabel = new Label();
     private final Label dailyHighLabel = new Label();
     private final Label dailyLowLabel = new Label();
     private final Label windSpeedLabel = new Label();
+    private Timeline clockTimeline;
+    private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
     private HourlyForecastView hourlyView;
     private DailyForecastView dailyView;
 
@@ -29,6 +39,16 @@ public class ForecastView extends VBox {
         this.getStyleClass().add("forecast-view");
 
         locationNameLabel.getStyleClass().add("label-location-name");
+        locationTimeLabel.getStyleClass().add("label-location-time");
+
+        forecast.addListener((obs, oldF, newF) -> {
+            if (newF != null && newF.getTimezone() != null) {
+                startLocationClock(newF.getTimezone());
+            } else {
+                stopLocationClock();
+            }
+        });
+
         // Bind the label to automatically change and react to the latest user search
         locationNameLabel.textProperty().bind(Bindings.createStringBinding(() -> {
             Location location = selectedLocation.get();
@@ -62,8 +82,11 @@ public class ForecastView extends VBox {
 
         HBox dailyHighAndLowBox = new HBox(5, dailyHighLabel, dailyLowLabel);
         dailyHighAndLowBox.getStyleClass().add("daily-highlow-box");
+        dailyHighAndLowBox.setAlignment(Pos.CENTER);
 
-        VBox currentSummaryBox = new VBox(5, locationNameLabel, currentTemperatureLabel, dailyHighAndLowBox);
+
+        VBox currentSummaryBox = new VBox(5, locationNameLabel, locationTimeLabel, currentTemperatureLabel, dailyHighAndLowBox, windSpeedLabel);
+        currentSummaryBox.setAlignment(Pos.CENTER);
 
         ToggleButton hourlyToggle = new ToggleButton("Hourly");
         hourlyToggle.setSelected(true);
@@ -124,6 +147,33 @@ public class ForecastView extends VBox {
 
     public Location getSelectedLocation() {
         return selectedLocation.get();
+    }
+
+    private void startLocationClock(String timezoneId) {
+        stopLocationClock(); // Stop any existing clock
+
+        try {
+            ZoneId zoneId = ZoneId.of(timezoneId);
+
+            // Create a Timeline that runs every second
+            clockTimeline = new Timeline(new KeyFrame(Duration.seconds(1), e -> {
+                ZonedDateTime now = ZonedDateTime.now(zoneId);
+                locationTimeLabel.setText(now.format(timeFormatter));
+            }));
+
+            clockTimeline.setCycleCount(Timeline.INDEFINITE);
+            clockTimeline.play();
+        } catch (Exception e) {
+            System.err.println("Could not parse timezone: " + timezoneId);
+            locationTimeLabel.setText("Invalid Timezone");
+        }
+    }
+
+    private void stopLocationClock() {
+        if (clockTimeline != null) {
+            clockTimeline.stop();
+        }
+        locationTimeLabel.setText("");
     }
 
 }

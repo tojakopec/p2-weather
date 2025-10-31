@@ -9,11 +9,11 @@ public class Enums {
         kmh,
         ms,
         mph,
-        knots
+        kn
     }
     public enum PrecipitationUnit {
         mm,
-        inches
+        inch
     }
     public enum ForecastInterval {
         hourly,

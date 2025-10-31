@@ -46,6 +46,8 @@ public class HourlyForecastView extends VBox {
             return;
         }
 
+        boolean firstHourAdded = false;
+
         Forecast.Hourly hourlyData = f.getHourly();
         List<String> times = hourlyData.getTimes();
         List<Double> temps = hourlyData.getTemperatures();
@@ -66,7 +68,13 @@ public class HourlyForecastView extends VBox {
             itemBox.setMinHeight(VBox.USE_PREF_SIZE);
             itemBox.setAlignment(Pos.CENTER);
 
-            String hour = i == 0 ? "Now" : time.format(outputFormatter).toLowerCase();
+            String hour;
+            if (!firstHourAdded) {
+                hour = "Now";
+                firstHourAdded = true;
+            } else {
+                hour = time.format(outputFormatter).toLowerCase();
+            }
             String temp = String.format("%.0f%s", temps.get(i), tempUnit);
             String iconChar = WeatherIconManager.getIconCharacter(codes.get(i)); // Using 'isDay'
 

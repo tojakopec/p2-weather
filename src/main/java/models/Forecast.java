@@ -23,55 +23,88 @@ public class Forecast {
     private int isDay;
 
 
-    @JsonProperty("current_weather")
-    private CurrentWeather current;
+//    @JsonProperty("current_weather")
+//    private CurrentWeather current;
+//
+//    @JsonProperty("current_weather_units")
+//    private CurrentWeatherUnits currentWeatherUnits;
 
-    @JsonProperty("current_weather_units")
-    private CurrentWeatherUnits currentWeatherUnits;
+    @JsonProperty("current")
+    private CurrentDetails currentDetails;
 
-    private static class CurrentWeatherUnits {
-        private String time;
-        private String interval;
+    @JsonProperty("current_units")
+    private CurrentUnits currentUnits;
 
-        @JsonProperty("temperature")
+    @JsonIgnoreProperties(ignoreUnknown = true)
+    public static class CurrentUnits {
+        @JsonProperty("temperature_2m")
         private String temperature;
-        @JsonProperty("windspeed")
+
+        @JsonProperty("windspeed_10m")
         private String windSpeedUnit;
 
-        @JsonProperty("winddirection")
-        private String windDirectionUnit;
+        @JsonProperty("rain")
+        private String rain;
+        @JsonProperty("showers")
+        private String showers;
 
-        @JsonProperty("is_day")
-        private String isDay;
-        @JsonProperty("weathercode")
-        private String weatherCode;
-        
+        public String getTemperature() { return temperature; }
+        public String getWindSpeedUnit() { return windSpeedUnit; }
+        public String getRain() { return rain; }
+        public String getShowers() { return showers; }
     }
 
     @JsonIgnoreProperties(ignoreUnknown = true)
-    public static class CurrentWeather {
-
+    public static class CurrentDetails {
         private String time;
-        private int interval;
 
-        @JsonProperty("temperature")
+        @JsonProperty("temperature_2m")
         private double temperature;
 
+        @JsonProperty("relative_humidity_2m")
+        private int relativeHumidity2m;
+
+        @JsonProperty("apparent_temperature")
+        private double apparentTemperature;
+
+        @JsonProperty("rain")
+        private double rain;
+        @JsonProperty("showers")
+        private double showers;
+
         @JsonProperty("is_day")
-        private int isDay; // 1 for day, 0 for night
+        private int isDay;
 
         @JsonProperty("weathercode")
         private int weatherCode;
 
-        @JsonProperty("windspeed")
+        @JsonProperty("windspeed_10m")
         private double windSpeed;
 
-        @JsonProperty("winddirection")
-        private int windDirection;
+        // Getters
+        public double getTemperature() {
+            return temperature;
+        }
+        public int getRelativeHumidity2m() {
+            return relativeHumidity2m;
+        }
+        public double getApparentTemperature() {
+            return apparentTemperature;
+        }
+        public int getIsDay() {
+            return isDay;
+        }
+        public int getWeatherCode() {
+            return weatherCode;
+        }
+        public double getWindSpeed() {
+            return windSpeed;
+        }
 
-
+        public double getRain() { return rain; }
+        public double getShowers() { return showers; }
     }
-    
+
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static class Hourly {
@@ -104,10 +137,14 @@ public class Forecast {
             return this.weatherCode;
         }
 
+        public List<Integer> getPrecipitationProbability(){
+            return precipitationProbability;
+        }
+
         public List<Double> getWindSpeeds(){
             return this.windSpeed10m;
         }
-        public List<Double> getUvIndices(){
+        public List<Double> getUvIndex(){
             return this.uvIndex;
         }
         public List<Double> getTemperatures(){
@@ -166,6 +203,14 @@ public class Forecast {
             return time;
         }
 
+        public List<String> getSunrise(){
+            return sunrise;
+        }
+
+        public List<String> getSunset(){
+            return sunset;
+        }
+
         public List<Integer> getWeatherCode(){
             return weatherCode;
         }
@@ -221,62 +266,71 @@ public class Forecast {
         this.daily = daily;
     }
 
-    public CurrentWeather getCurrent() {
-        return current;
+    public CurrentDetails getCurrentDetails(){
+        return currentDetails;
     }
+
+    public void setCurrentDetails(CurrentDetails currentDetails){
+        this.currentDetails = currentDetails;
+    }
+
+    // Formatted getters
 
     public double getCurrentTemperature() {
-        return current.temperature;
-    }
-
-    public String getFormattedTemperature() {
-      return String.format("%.0f%s", getCurrentTemperature(), getCurrentTemperatureUnit());
-    }
-    public void setCurrent(CurrentWeather current) {
-        this.current = current;
+        if (currentDetails == null) return 0.0;
+        return currentDetails.getTemperature();
     }
 
     public String getCurrentTemperatureUnit() {
-        return this.currentWeatherUnits.temperature;
+        if (currentUnits == null) return "°";
+        return currentUnits.getTemperature();
     }
-
-    public String getFormattedDailyHigh(){
-        return String.format("%.0f%s", daily.temperature2mMax.getFirst(), getCurrentTemperatureUnit());
-    }
-
-    public String getFormattedDailyLow(){
-        return String.format("%.0f%s", daily.temperature2mMin.getFirst(), getCurrentTemperatureUnit());
-    }
-
 
     public String getCurrentWindSpeedUnit() {
-        return this.currentWeatherUnits.windSpeedUnit;
+        if (currentUnits == null) return "";
+        return currentUnits.getWindSpeedUnit();
+    }
+
+    public String getFormattedTemperature() {
+        if (currentDetails == null) return "-";
+        return String.format("%.0f%s", getCurrentTemperature(), getCurrentTemperatureUnit());
     }
 
     public String getFormattedWindSpeed(){
-        return String.format("%.1f%s", current.windSpeed, getCurrentWindSpeedUnit());
+        if (currentDetails == null) return "-";
+        return String.format("%.1f%s", currentDetails.getWindSpeed(), getCurrentWindSpeedUnit());
     }
 
-    public void setWindSpeedUnit(String windSpeedUnit) {
-        this.currentWeatherUnits.windSpeedUnit = windSpeedUnit;
+    public String getCurrentRainUnit() {
+        if (currentUnits == null) return "mm"; // Default
+        return currentUnits.getRain();
     }
 
+    public String getCurrentShowersUnit() {
+        if (currentUnits == null) return "mm"; // Default
+        return currentUnits.getShowers();
+    }
 
     public int getCurrentWeatherCode() {
-        return this.current.weatherCode;
+        if (currentDetails == null) return 0; // Default to "clear"
+        return currentDetails.getWeatherCode();
     }
-    public int getHourlyWeatherCode(){
-        return this.hourly.weatherCode.getFirst();
-    }
-    public void setWeatherCode(int weatherCode) {
-        this.weatherCode = weatherCode;
-    }
+
     public int getIsDay() {
-        return isDay;
+        if (currentDetails == null) return 1; // Default to "day"
+        return currentDetails.getIsDay();
     }
-    public void setIsDay(int isDay) {
-        this.isDay = isDay;
+
+    public String getFormattedDailyHigh(){
+        if (daily == null || daily.getTemperature2mMax() == null || daily.getTemperature2mMax().isEmpty()) return "-";
+        return String.format("%.0f%s", daily.getTemperature2mMax().getFirst(), getCurrentTemperatureUnit());
     }
+
+    public String getFormattedDailyLow(){
+        if (daily == null || daily.getTemperature2mMin() == null || daily.getTemperature2mMin().isEmpty()) return "-";
+        return String.format("%.0f%s", daily.getTemperature2mMin().getFirst(), getCurrentTemperatureUnit());
+    }
+
 
     @Override
     public String toString(){
@@ -286,7 +340,7 @@ public class Forecast {
                 ", timezone='" + timezone + '\'' +
                 ", hourly=" + hourly +
                 ", daily=" + daily +
-                ", current=" + current +
+                ", current=" + currentDetails +
                 '}';
     }
 }
