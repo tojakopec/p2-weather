@@ -22,13 +22,6 @@ public class Forecast {
     private int weatherCode;
     private int isDay;
 
-
-//    @JsonProperty("current_weather")
-//    private CurrentWeather current;
-//
-//    @JsonProperty("current_weather_units")
-//    private CurrentWeatherUnits currentWeatherUnits;
-
     @JsonProperty("current")
     private CurrentDetails currentDetails;
 

@@ -20,15 +20,25 @@ import models.Location;
 import utils.Settings;
 import utils.RecentSearches;
 
+/**
+ * The main entry point for the JavaFX weather application.
+ * This class is responsible for initializing all core services (Settings, API),
+ * building the main UI layout by assembling components,
+ * and coordinating all interactions between components (e.g., search -> forecast).
+ */
+
 public class MainApp extends Application {
 
+    // Single instances of the core services, shared across the app.
     private Settings settings;
     private ForecastLookup forecastLookup;
     private RecentSearches recentSearches;
 
+    // Fields for managing the slide-out "Recent Searches" drawer state and animation.
     private TranslateTransition drawerSlide;
     private RecentSearchesView recentSearchesView;
 
+    // The main StackPane
     private StackPane root;
 
     private boolean isDrawerOpen = false;
@@ -90,11 +100,16 @@ public class MainApp extends Application {
 
         recentSearchesView = new RecentSearchesView(recentSearches);
         recentSearchesView.setVisible(false);
+        // This listener ensures the drawer is positioned correctly off-screen
+        // even before its width is fully calculated.
         recentSearchesView.widthProperty().addListener((observable, oldValue, newValue) -> {
             recentSearchesView.setTranslateX(-newValue.doubleValue());
         });
 
         root = new StackPane();
+        // The order here is critical for layering (Z-index).
+        // mainContent is at the bottom.
+        // resultsList must be last (topmost) to receive mouse clicks.
         root.getChildren().addAll(
                 mainContent,
                 searchView,
@@ -168,6 +183,11 @@ public class MainApp extends Application {
         primaryStage.show();
     }
 
+    /**
+     * Configures the TranslateTransition for the drawer.
+     * Sets the onFinished event handler to manage the 'isDrawerOpen' state
+     * and visibility of the drawer.
+     */
     private void setupDrawerAnimation(){
         drawerSlide = new TranslateTransition(Duration.millis(300), recentSearchesView);
 
@@ -181,6 +201,11 @@ public class MainApp extends Application {
         });
     }
 
+    /**
+     * Toggles the drawer open or closed.
+     * It explicitly sets the 'from' and 'to' X-coordinates for the
+     * animation to ensure it works correctly every time.
+     */
     private void toggleDrawer() {
         if (!isDrawerOpen) {
             drawerSlide.setFromX(-recentSearchesView.getWidth());
@@ -195,7 +220,8 @@ public class MainApp extends Application {
             drawerSlide.play();
         }
     }
-
+    // Updates the root background by swapping CSS classes
+    // based on the 'is_day' flag from the forecast.
     private void updateBackground(Forecast forecast) {
         if (root == null || forecast == null) {
             return;

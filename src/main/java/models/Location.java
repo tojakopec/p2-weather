@@ -7,6 +7,16 @@ import java.io.Serializable;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 
+/**
+ * The primary data model for a single geographic location.
+ * This class is used by Jackson to parse the Geocoding API results
+ * and is also saved as part of a SearchEntry for the recent searches feature.
+ *
+ * @JsonIgnoreProperties(ignoreUnknown = true) prevents the app from crashing
+ * if the API adds new fields that don't exist in this class.
+ *
+ * Implements Serializable so it can be written to a file as part of a SearchEntry.
+ */
 @JsonIgnoreProperties(ignoreUnknown = true)
 public class Location implements Serializable {
     private int id;

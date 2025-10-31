@@ -19,17 +19,29 @@ import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 
+/**
+ * Represents the main weather display part.
+ * This VBox organizes the current summary, the hourly/daily toggles,
+ * and all child views (Hourly, Daily, Details) for a selected location.
+ * It uses JavaFX properties and bindings to update reactively.
+ */
 public class ForecastView extends VBox {
+    // The core "input" properties. MainApp sets these, and all internal bindings react.
     private final ObjectProperty<Location> selectedLocation = new SimpleObjectProperty<>();
     private final ObjectProperty<Forecast> forecast = new SimpleObjectProperty<>();
+
+    // Parts for the current summary box at the top of the forecast view
     private final Label locationNameLabel = new Label();
     private final Label locationTimeLabel = new Label();
     private final Label currentTemperatureLabel = new Label();
     private final Label dailyHighLabel = new Label();
     private final Label dailyLowLabel = new Label();
     private final Label windSpeedLabel = new Label();
+
+    // Helpers for the clock. Clock is location-specific.
     private Timeline clockTimeline;
     private final DateTimeFormatter timeFormatter = DateTimeFormatter.ofPattern("h:mm a");
+
     private HourlyForecastView hourlyView;
     private DailyForecastView dailyView;
     private WeatherDetailsView detailsView;
@@ -42,6 +54,7 @@ public class ForecastView extends VBox {
         locationNameLabel.getStyleClass().add("label-location-name");
         locationTimeLabel.getStyleClass().add("label-location-time");
 
+        // Listen for changes to the forecast object to start/stop the local clock.
         forecast.addListener((obs, oldF, newF) -> {
             if (newF != null && newF.getTimezone() != null) {
                 startLocationClock(newF.getTimezone());
@@ -50,7 +63,9 @@ public class ForecastView extends VBox {
             }
         });
 
-        // Bind the label to automatically change and react to the latest user search
+        // All labels are bound to properties. They will update automatically
+        // when the selectedLocation or forecast properties change,
+        // without needing manual setters.
         locationNameLabel.textProperty().bind(Bindings.createStringBinding(() -> {
             Location location = selectedLocation.get();
             return location == null ? "Search for a location to see the weather forecast." : (
@@ -83,6 +98,7 @@ public class ForecastView extends VBox {
 
         Label windIcon = new Label("\uf021");
         windIcon.getStyleClass().add("wind-icon");
+        // Manual pixel nudge to visually align the icon font with the Arial text font.
         windIcon.setTranslateY(-2);
 
         HBox windBox = new HBox(5, windIcon, windSpeedLabel);
@@ -96,6 +112,7 @@ public class ForecastView extends VBox {
         VBox currentSummaryBox = new VBox(5, locationNameLabel, locationTimeLabel, currentTemperatureLabel, dailyHighAndLowBox, windBox);
         currentSummaryBox.setAlignment(Pos.CENTER);
 
+        // Toggler to alternate between hourly and daily view
         ToggleButton hourlyToggle = new ToggleButton("Hourly");
         hourlyToggle.setSelected(true);
         hourlyToggle.getStyleClass().add("view-toggle-button");
@@ -109,6 +126,7 @@ public class ForecastView extends VBox {
         hourlyToggle.setToggleGroup(viewToggleGroup);
         dailyToggle.setToggleGroup(viewToggleGroup);
 
+        // Prevents the user from de-selecting a toggle (which would hide both views).
         viewToggleGroup.selectedToggleProperty().addListener((obs, oldToggle, newToggle) -> {
                     if (newToggle == null) {
                         // If the new selection is null (user clicked selected toggle),
@@ -127,23 +145,29 @@ public class ForecastView extends VBox {
         dailyView = new DailyForecastView();
         dailyView.forecastProperty().bind(forecast);
 
+        // Bind the visibility of the child views to the toggle button's selected state.
         hourlyView.visibleProperty().bind(hourlyToggle.selectedProperty());
         hourlyView.managedProperty().bind(hourlyToggle.selectedProperty());
 
         dailyView.visibleProperty().bind(dailyToggle.selectedProperty());
         dailyView.managedProperty().bind(dailyToggle.selectedProperty());
 
+        // The "details" box that lives at the bottom
         detailsView = new WeatherDetailsView();
         detailsView.forecastProperty().bind(this.forecast);
 
-
+        // Add all major sections to this VBox
         this.getChildren().addAll(currentSummaryBox, toggleBox, hourlyView, dailyView, detailsView);
     }
+
+
+    // Exposes the selectedLocation property so MainApp can bind to it.
 
     public ObjectProperty<Location> selectedLocationProperty() {
         return selectedLocation;
     }
 
+    // Exposes the forecast property so children can bind to it.
     public ObjectProperty<Forecast> forecastProperty() {
         return forecast;
     }
@@ -160,6 +184,8 @@ public class ForecastView extends VBox {
         return selectedLocation.get();
     }
 
+    // Starts a new Timeline-based clock for the specific timezone.
+    // Updates locationTimeLabel every second
     private void startLocationClock(String timezoneId) {
         stopLocationClock(); // Stop any existing clock
 
@@ -180,6 +206,7 @@ public class ForecastView extends VBox {
         }
     }
 
+    // Stops and clears the clock timeline
     private void stopLocationClock() {
         if (clockTimeline != null) {
             clockTimeline.stop();

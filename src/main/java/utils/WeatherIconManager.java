@@ -29,8 +29,7 @@ public class WeatherIconManager {
 
     /**
      * Gets the correct icon character (as a String) for a given WMO code
-     * @param wmoCode The WMO weather interpretation cod
-     * @return A String containing the single Unicode character for the icon.
+     * wmoCode is The WMO weather interpretation code
      */
     public static String getIconCharacter(int wmoCode) {
 

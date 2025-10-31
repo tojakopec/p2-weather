@@ -16,9 +16,18 @@ import java.time.format.TextStyle;
 import java.util.List;
 import java.util.Locale;
 
+/**
+ * A component that displays the daily forecast (e.g., 7-day) in a
+ * horizontal list. It is a child component of ForecastView and reacts
+ * to changes in the main forecast property.
+ * Changing the settings in the app will change the amount of days displayed here
+ */
 public class DailyForecastView extends VBox {
 
+    // The main forecast data, bound from the parent ForecastView.
     private final ObjectProperty<Forecast> forecast = new SimpleObjectProperty<>();
+
+    // The HBox that holds all the individual day VBoxes.
     private final HBox contentBox = new HBox(15);
     private final Label titleLabel = new Label("7-Day Forecast");
     private final DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("M/d");
@@ -27,21 +36,26 @@ public class DailyForecastView extends VBox {
         super(10);
         this.getStyleClass().add("daily-forecast-view"); // New CSS class
         titleLabel.getStyleClass().add("forecast-title-label");
+        // Center the title and the scroll pane horizontally within this VBox.
         this.setAlignment(Pos.CENTER);
 
         ScrollPane scrollPane = new ScrollPane(contentBox);
+        // We only want horizontal scrolling if needed, never vertical (for this weather app scenario, at least).
         scrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         scrollPane.getStyleClass().add("forecast-scroll-pane");
+        // This forces the contentBox to fill the full width of the scroll pane.
         scrollPane.setFitToWidth(true);
 
         contentBox.getStyleClass().add("forecast-content-box");
         contentBox.setAlignment(Pos.CENTER);
 
+        // Listen for changes to the forecast property and rebuild the view.
         forecast.addListener((obs, oldF, newF) -> populateView(newF));
 
         this.getChildren().addAll(titleLabel, scrollPane);
     }
 
+    // Clears and rebuilds the daily forecast items based on new forecast data.
     private void populateView(Forecast f) {
         contentBox.getChildren().clear();
         if (f == null || f.getDaily() == null || f.getDaily().getTime().isEmpty()) {
@@ -51,15 +65,14 @@ public class DailyForecastView extends VBox {
 
         Forecast.Daily dailyData = f.getDaily();
 
-
-
-        // Use our new getters
+        // Get all the lists of data from the model.
         List<String> times = dailyData.getTime();
         List<Double> highs = dailyData.getTemperature2mMax();
         List<Double> lows = dailyData.getTemperature2mMin();
         List<Integer> codes = dailyData.getWeatherCode();
         String tempUnit = f.getCurrentTemperatureUnit();
 
+        // Dynamically update the title based on how many days we received/set in the settings.
         titleLabel.setText(times.size() + "-Day Forecast");
 
         int numDays = times.size();
@@ -72,7 +85,7 @@ public class DailyForecastView extends VBox {
 
             LocalDate date = LocalDate.parse(times.get(i), DateTimeFormatter.ISO_LOCAL_DATE);
 
-            // Format the data
+            // Format the data for display
             String day = formatDay(date);
             String dateString = date.format(dateFormatter);
             String tempHigh = String.format("%.0f%s", highs.get(i), tempUnit);
@@ -101,7 +114,8 @@ public class DailyForecastView extends VBox {
         }
     }
 
-
+    // Helper method to format the date.
+    // Converts a LocalDate into "Today" or the short day name (e.g., "Fri").
     private String formatDay(LocalDate date) {
         if (date.equals(LocalDate.now())) {
             return "Today";

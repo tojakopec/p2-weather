@@ -14,11 +14,18 @@ import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
+/**
+ * A component that displays the hourly forecast in a horizontal, scrolling list.
+ * This is a child component of ForecastView and reacts to changes
+ * in the main forecast property.
+ */
 public class HourlyForecastView extends VBox {
 
     private final ObjectProperty<Forecast> forecast = new SimpleObjectProperty<>();
     private final HBox contentBox = new HBox(15);
     private final Label titleLabel = new Label("Hourly Forecast");
+
+    // Formatters for parsing the API's ISO 8601 time string...
     private final DateTimeFormatter inputFormatter = DateTimeFormatter.ISO_LOCAL_DATE_TIME;
     private final DateTimeFormatter outputFormatter = DateTimeFormatter.ofPattern("ha"); // "3PM"
 
@@ -40,12 +47,16 @@ public class HourlyForecastView extends VBox {
         this.getChildren().addAll(titleLabel, scrollPane);
     }
 
+    // Clears and rebuilds the hourly forecast items.
+    // Fired by the listener when the forecast data changes
     private void populateView(Forecast f) {
+        // Clear all old hour items from the previous forecast.
         contentBox.getChildren().clear();
         if (f == null || f.getHourly() == null) {
             return;
         }
 
+        // This flag ensures only the *first* hour we actually display is labeled "Now".
         boolean firstHourAdded = false;
 
         Forecast.Hourly hourlyData = f.getHourly();
@@ -57,7 +68,7 @@ public class HourlyForecastView extends VBox {
 
         int numHours = times.size();
         for (int i = 0; i < numHours; i++) {
-            // Only show from current hour onward (optional)
+            // Filter out hours from the past; only show from the current hour onward.
             LocalDateTime time = LocalDateTime.parse(times.get(i), inputFormatter);
             if (time.isBefore(LocalDateTime.now().minusHours(1))) {
                 continue;
@@ -68,6 +79,7 @@ public class HourlyForecastView extends VBox {
             itemBox.setMinHeight(VBox.USE_PREF_SIZE);
             itemBox.setAlignment(Pos.CENTER);
 
+            // Use the flag to label the very first hour as "Now".
             String hour;
             if (!firstHourAdded) {
                 hour = "Now";

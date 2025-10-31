@@ -18,6 +18,13 @@ import utils.Settings;
 
 import java.util.Properties;
 
+/**
+ * A pop-up window (Stage) for editing application settings.
+ * This window is a "modal," meaning it blocks interaction with the main
+ * application until it is closed.
+ * It reads the current settings from a Settings object and saves them back on request.
+ * Also saves the settings to the settings file so they persist if we close/reopen the app.
+ */
 public class SettingsWindow extends Stage {
     private Settings settings;
     private ComboBox<TemperatureUnit> tempBox;
@@ -29,17 +36,19 @@ public class SettingsWindow extends Stage {
         this.settings = settings;
         Properties props = settings.getProperties();
 
+        // Makes this window a blocking pop-up (modal)
         initModality(Modality.APPLICATION_MODAL);
         initOwner(owner);
         setTitle("Settings");
         setResizable(false);
 
+        // Using grid to neatly organize the items
         GridPane grid = new GridPane();
         grid.setHgap(10);
         grid.setVgap(10);
         grid.setPadding(new Insets(20));
 
-        // Temperature
+        // Temperature settings labels
         Label tempLabel = new Label("Temperature Units:");
         tempLabel.getStyleClass().add("settings-label");
         grid.add(tempLabel, 0, 0);
@@ -84,16 +93,18 @@ public class SettingsWindow extends Stage {
         VBox layout = new VBox(20, grid, buttonBox);
         layout.setAlignment(Pos.CENTER);
         layout.setPadding(new Insets(10));
+        layout.getStyleClass().add("settings-window");
 
         Scene scene = new Scene(layout);
+
+        // Apply the same stylesheet as the main app.
         scene.getStylesheets().add("stylesheets/style.css");
         setScene(scene);
-
-
     }
 
+    // Called when the Save button is clicked. Reads the values from the controls and updates the settings object,
+    // which then saves it to the .properties file
     private void saveAndClose() {
-        // Update the settings object
         settings.updateSettings("temperature_unit", tempBox.getValue().toString());
         settings.updateSettings("wind_speed_unit", windBox.getValue().toString());
         settings.updateSettings("precipitation_unit", precipBox.getValue().toString());

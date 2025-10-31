@@ -1,11 +1,14 @@
 package utils;
 
-import models.Location;
-
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * A generic utility class for handling object serialization.
+ * It provides static methods to read and write lists of objects to a file,
+ * which is used by RecentSearches to persist the search history.
+ */
 public class FileHandler {
 
     @SuppressWarnings("unchecked")

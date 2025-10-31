@@ -1,13 +1,14 @@
+/* Loads the custom 'Weather Icons' font from the resources folder */
 @font-face {
     font-family: 'Weather Icons';
     src: url('../font/weathericons-regular-webfont.ttf');
 }
+/* Styles for the entire application window*/
 .root{
-    /*-fx-background-color: #333333;*/
     -fx-font-family: "Arial";
     -fx-padding: 10;
 }
-
+/* Dynamic backgrounds that change depending on the time of the day. */
 .bg-day {
     -fx-background-color: linear-gradient(to bottom, #2C5364, #203A43, #0F2027);
 }
@@ -16,10 +17,9 @@
     -fx-background-color: linear-gradient(to bottom, #020111, #3a3a52);
 }
 
-.bg-sunset {
-    -fx-background-color: linear-gradient(to bottom, #763841, #2C2C54, #0F2027);
-}
-
+/* Styles for the search bar (which is in its own .java file)
+ * and the resulting dropdown list.
+ */
 .search-field {
     -fx-background-color: rgba(68, 68, 68, 0.3);
     -fx-background-radius: 10;
@@ -71,6 +71,7 @@
 
 }
 
+/* Hover and keyboard selection highlight for search items */
 .search-result-label-box:hover, .highlighted-result{
     -fx-background-color: rgba(68, 68, 68, 0.4);
     -fx-border-color: rgba(166,72,30, 0.8);
@@ -98,13 +99,17 @@
     -fx-text-fill: #007aff;
 }
 
+/* Icons are styled the same way as text, as they are Unicode characters*/
 .wind-icon {
     -fx-font-family: "Weather Icons";
     -fx-font-size: 20px;
     -fx-text-fill: #007aff;
 }
 
-
+/* Forecast View: Hourly / Daily
+   Styles for the child components that show the
+   scrolling hourly and daily forecasts.
+ */
 .forecast-view {
     -fx-background-color: rgba(68, 68, 68, 0.2);
     -fx-background-radius: 10;
@@ -125,7 +130,6 @@
 }
 
 .hourly-forecast-view {
-    /*-fx-background-color: rgba(68, 68, 68, 0.3);*/
     -fx-background-radius: 10;
     -fx-font-family: "Arial";
     -fx-padding: 30;
@@ -157,7 +161,7 @@
     -fx-font-size: 14;
     -fx-text-fill: #999999;
 }
-
+/* Changes default appearance of horizontal scroll bar*/
 .forecast-scroll-pane {
     -fx-background-color: transparent;
     -fx-min-height: 160px;
@@ -207,7 +211,6 @@
 }
 
 .daily-forecast-view {
-    /*-fx-background-color: rgba(68, 68, 68, 0.3);*/
     -fx-background-radius: 10;
     -fx-font-family: "Arial";
     -fx-padding: 30;
@@ -267,7 +270,6 @@
 }
 
 .drawer-menu {
-    /*-fx-background-color: rgba(68, 68, 68, 0.5);*/
     -fx-background-color: linear-gradient(to bottom, rgba(61, 61, 117, 0.2) 40%, transparent);
     -fx-background-radius: 10;
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 0);
@@ -307,7 +309,6 @@
 }
 
 .weather-details-view {
-    /*-fx-background-color: #444444;*/
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.4), 20, 0, 0, 0);
     -fx-background-radius: 10;
     -fx-padding: 20px 30px;
@@ -320,13 +321,18 @@
 
 .details-label {
     -fx-font-size: 14px;
-    -fx-text-fill: #999999; /* Light gray for the title */
+    -fx-text-fill: #999999;
     -fx-alignment: center-left;
 }
 
 .details-value {
     -fx-font-size: 16px;
     -fx-font-weight: bold;
-    -fx-text-fill: #cfcfcf; /* White for the value */
+    -fx-text-fill: #cfcfcf;
     -fx-alignment: center-right;
+}
+
+.settings-window{
+    -fx-background-color: #333333;
+    -fx-padding: 20px;
 }
